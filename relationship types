@@ -1,0 +1,40 @@
+------------- Illustration of relationship types. ----------
+
+------------- One-to-One (One account - one account details): -------------
+
+CREATE TABLE clients_bank_accounts (
+  account_id serial PRIMARY KEY,         
+  account_number varchar(20) NOT NULL,   
+  account_holder varchar(30) NOT NULL, 
+  bank_id int NOT NULL,       
+  balance decimal(15,2) NOT NULL       
+);
+
+CREATE TABLE account_details (
+  detail_id serial PRIMARY KEY,
+  account_id int REFERENCES clients_bank_accounts(account_id),
+  opened_date date NOT NULL,
+  last_accessed_date date,
+  additional_info varchar(255)
+);
+
+------------- Many-to-one (Many accounts to one bank): -------------
+
+CREATE TABLE clients_bank_accounts (
+  account_id serial PRIMARY KEY,         
+  account_number varchar(20) NOT NULL,   
+  account_holder varchar(30) NOT NULL, 
+  bank_id int NOT NULL REFERENCES bank (bank_id),       
+  balance decimal(15,2) NOT NULL       
+);
+
+CREATE TABLE bank (
+  bank_id serial PRIMARY KEY,       
+  bank_name varchar(100) NOT NULL,    
+  bank_code varchar(20) NOT NULL,     
+  address varchar(200) NOT NULL       
+);
+
+
+
+
