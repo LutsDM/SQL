@@ -1,6 +1,6 @@
 ------------- Illustration of relationship types. ----------
 
-------------- One-to-One (One account - one account details): -------------
+-- One-to-One (One account - one account details) :
 
 CREATE TABLE clients_bank_accounts (
   account_id serial PRIMARY KEY,         
@@ -18,7 +18,7 @@ CREATE TABLE account_details (
   additional_info varchar(255)
 );
 
-------------- Many-to-one (Many accounts to one bank): -------------
+-- Many-to-one (Many accounts to one bank):
 
 CREATE TABLE clients_bank_accounts (
   account_id serial PRIMARY KEY,         
@@ -30,11 +30,27 @@ CREATE TABLE clients_bank_accounts (
 
 CREATE TABLE bank (
   bank_id serial PRIMARY KEY,       
-  bank_name varchar(100) NOT NULL,    
+  bank_name varchar(50) NOT NULL,    
   bank_code varchar(20) NOT NULL,     
   address varchar(200) NOT NULL       
 );
 
+-- Many-to-many (Many accounts to many card type (Visa, MasterCard, AmericanExpress)):
 
+CREATE TABLE clients_bank_accounts (
+  account_id serial PRIMARY KEY,         
+  account_number varchar(20) NOT NULL,   
+  account_holder varchar(30) NOT NULL, 
+  bank_id int NOT NULL REFERENCES bank (bank_id),       
+  balance decimal(15,2) NOT NULL       
+);
 
+CREATE TABLE card_type (
+  type_id serial PRIMARY KEY,
+  card_type varchar(20) NOT NULL
+  );
 
+CREATE TABLE account_card_type (
+  account_id REFERENCES clients_bank_accounts.account_id,
+  card_type_id REFERENCES card_type.type_id
+  );
