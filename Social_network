@@ -1,0 +1,304 @@
+ -- CREATE DATABASE
+--   Social_network;
+CREATE TABLE
+  Users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50),
+    email VARCHAR(50) UNIQUE,
+    password VARCHAR(50),
+    full_name VARCHAR(50),
+    bio TEXT,
+    date_of_birth DATE
+  );
+
+INSERT INTO
+  Users (
+    username,
+    email,
+    password,
+    full_name,
+    bio,
+    date_of_birth
+  )
+VALUES
+  (
+    'john_doe',
+    'john.doe@example.com',
+    'password123',
+    'John Doe',
+    'Software developer with a passion for open-source projects.',
+    '1990-05-15'
+  ),
+  (
+    'jane_smith',
+    'jane.smith@example.com',
+    'securepass456',
+    'Jane Smith',
+    'Digital artist and UX designer.',
+    '1992-08-22'
+  ),
+  (
+    'mike_brown',
+    'mike.brown@example.com',
+    'mikepass789',
+    'Michael Brown',
+    'Enthusiastic traveler and food blogger.',
+    '1987-12-03'
+  ),
+  (
+    'sarah.connor',
+    'sarah.connor@example.com',
+    'terminator2023',
+    'Sarah Connor',
+    'Fitness coach and motivational speaker.',
+    '1995-04-18'
+  ),
+  (
+    'robert_f',
+    'robert.f@example.com',
+    'secureme2022',
+    'Robert Fisher',
+    'Cybersecurity specialist with 10+ years of experience.',
+    '1985-07-29'
+  ),
+  (
+    'emma.jones',
+    'emma.jones@example.com',
+    'emmapass123',
+    'Emma Jones',
+    'Book lover and aspiring novelist.',
+    '1993-09-11'
+  ),
+  (
+    'alex_taylor',
+    'alex.taylor@example.com',
+    'taylorpass456',
+    'Alex Taylor',
+    'Music producer and DJ.',
+    '1991-06-05'
+  ),
+  (
+    'lucy_adams',
+    'lucy.adams@example.com',
+    'lucypass789',
+    'Lucy Adams',
+    'Teacher and education consultant.',
+    '1990-02-14'
+  ),
+  (
+    'daniel_white',
+    'daniel.white@example.com',
+    'whitedaniel123',
+    'Daniel White',
+    'Freelance graphic designer.',
+    '1988-11-20'
+  ),
+  (
+    'sophia_clark',
+    'sophia.clark@example.com',
+    'clarksecure123',
+    'Sophia Clark',
+    'Photographer and nature enthusiast.',
+    '1994-03-27'
+  );
+
+CREATE TABLE
+  Posts (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES Users (id) ON DELETE
+    SET
+      NULL,
+      content TEXT
+  );
+
+INSERT INTO
+  Posts (user_id, content)
+VALUES
+  (
+    1,
+    'Exploring the beautiful mountains today! #NatureLover'
+  ),
+  (
+    1,
+    'Check out my latest digital artwork. Feedback is welcome!'
+  ),
+  (
+    4,
+    'Tried a new recipe today. Absolutely delicious!'
+  ),
+  (4, 'Never skip leg day! Fitness is a lifestyle.'),
+  (
+    4,
+    'Stay safe online! Cybersecurity tips coming soon.'
+  ),
+  (
+    7,
+    'Just finished reading an amazing book. Highly recommend!'
+  );
+
+CREATE TABLE
+  Friends (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES Users (id) ON DELETE
+    SET
+      NULL,
+      friend_id INT REFERENCES Users (id) ON DELETE
+    SET
+      NULL
+  );
+
+INSERT INTO
+  Friends (user_id, friend_id)
+VALUES
+  (1, 5),
+  (3, 2),
+  (6, 2),
+  (4, 8),
+  (1, 6),
+  (5, 9),
+  (4, 2),
+  (3, 5),
+  (6, 2),
+  (7, 9);
+
+CREATE TABLE
+  Groups (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50),
+    description TEXT,
+    owner_id INT REFERENCES Users (id) ON DELETE
+    SET
+      NULL
+  );
+
+INSERT INTO
+  Groups (name, description, owner_id)
+VALUES
+  (
+    'Java Developers',
+    'A group for Java enthusiasts to share knowledge and resources.',
+    1
+  ),
+  (
+    'Database Architects',
+    'A group for professionals focused on database design and optimization.',
+    2
+  ),
+  (
+    'Frontend Developers',
+    'A group dedicated to web development, HTML, CSS, and JavaScript.',
+    3
+  ),
+  (
+    'Data Science & AI',
+    'A group for those passionate about data analysis, machine learning, and AI technologies.',
+    4
+  );
+
+CREATE TABLE
+  ConversationMembers (
+    id SERIAL PRIMARY KEY,
+    conversation_id INT,
+    user_id INT REFERENCES Users (id) ON DELETE
+    SET
+      NULL
+  );
+
+INSERT INTO
+  ConversationMembers (conversation_id, user_id)
+VALUES
+  (1, 5),
+  (1, 2),
+  (1, 9),
+  (2, 5),
+  (2, 8),
+  (3, 2),
+  (3, 4),
+  (3, 9),
+  (3, 8);
+
+CREATE TABLE
+  Conversations (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50),
+    creator_id INT REFERENCES Users (id)
+  );
+
+INSERT INTO
+  Conversations (name, creator_id)
+VALUES
+  ('DEV52', 5),
+  (NULL, 8),
+  ('DB!', 9);
+
+CREATE TABLE
+  Messages (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES Users (id) ON DELETE
+    SET
+      NULL,
+      conversation_id INT
+  );
+
+INSERT INTO
+  Messages (user_id, conversation_id)
+VALUES
+  (5, 1),
+  (2, 1),
+  (9, 1),
+  (5, 2),
+  (8, 2),
+  (2, 3),
+  (4, 3),
+  (9, 3),
+  (8, 3),
+  (5, 2),
+  (8, 1),
+  (4, 2),
+  (3, 1),
+  (9, 2),
+  (1, 1),
+  (2, 2),
+  (7, 3),
+  (6, 2),
+  (3, 2);
+
+SELECT
+  user_id,
+  username,
+  COUNT(Messages.id) AS count_masseges
+FROM
+  users
+  JOIN messages ON messages.user_id = Users.id
+GROUP BY
+  messages.user_id,
+  username
+  
+  
+SELECT
+  user_id,
+  username,
+FROM
+  users
+  JOIN posts ON posts.user_id = users.id
+  JOIN groups ON groups.owner_id = users.id
+WHERE
+  posts.id > 0
+  AND groups.id > 0
+  
+  
+  
+SELECT
+  users.id AS user_id,
+  users.username,
+  COUNT(friends.friend_id) AS friends_count
+FROM
+  users 
+  LEFT JOIN friends ON friends.user_id = users.id
+GROUP BY
+  users.id, users.username
+ORDER BY
+  friends_count DESC
+
+  
+  
