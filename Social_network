@@ -1,7 +1,7 @@
  -- CREATE DATABASE
 --   Social_network;
 CREATE TABLE
-  Users (
+  users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50),
     email VARCHAR(50) UNIQUE,
@@ -12,7 +12,7 @@ CREATE TABLE
   );
 
 INSERT INTO
-  Users (
+  users (
     username,
     email,
     password,
@@ -103,16 +103,16 @@ VALUES
   );
 
 CREATE TABLE
-  Posts (
+  posts (
     id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES Users (id) ON DELETE
+    user_id INT REFERENCES users (id) ON DELETE
     SET
       NULL,
       content TEXT
   );
 
 INSERT INTO
-  Posts (user_id, content)
+  posts (user_id, content)
 VALUES
   (
     1,
@@ -137,18 +137,18 @@ VALUES
   );
 
 CREATE TABLE
-  Friends (
+  friends (
     id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES Users (id) ON DELETE
+    user_id INT REFERENCES users (id) ON DELETE
     SET
       NULL,
-      friend_id INT REFERENCES Users (id) ON DELETE
+      friend_id INT REFERENCES users (id) ON DELETE
     SET
       NULL
   );
 
 INSERT INTO
-  Friends (user_id, friend_id)
+  friends (user_id, friend_id)
 VALUES
   (1, 5),
   (3, 2),
@@ -162,7 +162,7 @@ VALUES
   (7, 9);
 
 CREATE TABLE
-  Groups (
+  groups (
     id SERIAL PRIMARY KEY,
     name VARCHAR(50),
     description TEXT,
@@ -172,7 +172,7 @@ CREATE TABLE
   );
 
 INSERT INTO
-  Groups (name, description, owner_id)
+  groups (name, description, owner_id)
 VALUES
   (
     'Java Developers',
@@ -196,16 +196,16 @@ VALUES
   );
 
 CREATE TABLE
-  ConversationMembers (
+  conversation_members (
     id SERIAL PRIMARY KEY,
     conversation_id INT,
-    user_id INT REFERENCES Users (id) ON DELETE
+    user_id INT REFERENCES users (id) ON DELETE
     SET
       NULL
   );
 
 INSERT INTO
-  ConversationMembers (conversation_id, user_id)
+  conversation_members (conversation_id, user_id)
 VALUES
   (1, 5),
   (1, 2),
@@ -218,30 +218,30 @@ VALUES
   (3, 8);
 
 CREATE TABLE
-  Conversations (
+  conversations (
     id SERIAL PRIMARY KEY,
     name VARCHAR(50),
-    creator_id INT REFERENCES Users (id)
+    creator_id INT REFERENCES users (id)
   );
 
 INSERT INTO
-  Conversations (name, creator_id)
+  conversations (name, creator_id)
 VALUES
   ('DEV52', 5),
   (NULL, 8),
   ('DB!', 9);
 
 CREATE TABLE
-  Messages (
+  messages (
     id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES Users (id) ON DELETE
+    user_id INT REFERENCES users (id) ON DELETE
     SET
       NULL,
       conversation_id INT
   );
 
 INSERT INTO
-  Messages (user_id, conversation_id)
+  messages (user_id, conversation_id)
 VALUES
   (5, 1),
   (2, 1),
@@ -269,7 +269,7 @@ SELECT
   COUNT(Messages.id) AS count_masseges
 FROM
   users
-  JOIN messages ON messages.user_id = Users.id
+  JOIN messages ON messages.user_id = users.id
 GROUP BY
   messages.user_id,
   username
